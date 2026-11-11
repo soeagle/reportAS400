@@ -1,7 +1,7 @@
-# TwgIBMiControl
+# controlli As400
 
 Monitoraggio NIS2 per IBM i (AS/400): dashboard web, allarmi via email, storico
-allarmi e report PDF mensile per ogni sistema.
+allarmi e report PDF mensile.
 
 ## Cosa controlla (ogni pochi minuti, soglie modificabili)
 
