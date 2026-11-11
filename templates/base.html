@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>TwgIBMiControl</title>
+<style>
+  :root { --ok:#1a7f37; --warn:#b35900; --alarm:#c62828; --bg:#f5f6f8; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; margin:0; background:var(--bg); color:#222; }
+  header { background:#1b2a4a; color:#fff; display:flex; align-items:center; gap:24px; padding:10px 24px; }
+  header .logo { font-weight:700; font-size:18px; }
+  nav a { color:#cfd8ea; text-decoration:none; margin-right:18px; font-size:15px; }
+  nav a.active { color:#fff; font-weight:600; border-bottom:2px solid #4c8bf5; }
+  .conn { margin-left:auto; font-size:13px; color:#9fb4d9; }
+  main { max-width:1100px; margin:24px auto; padding:0 16px; }
+  .banner { background:#fff; border:1px solid #e2e5ea; border-radius:10px; padding:16px 20px; display:flex; align-items:center; gap:24px; margin-bottom:20px; }
+  .status-badge { font-size:20px; font-weight:700; }
+  .status-badge.warn { color:var(--warn); }
+  .status-badge.ok { color:var(--ok); }
+  .counts { display:flex; gap:24px; font-size:14px; }
+  .counts b { font-size:18px; display:block; }
+  .ok-c b { color:var(--ok); } .alarm-c b { color:var(--alarm); }
+  .updated { margin-left:auto; color:#888; font-size:13px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:16px; }
+  .card { background:#fff; border:1px solid #e2e5ea; border-radius:10px; padding:16px 20px; }
+  .card h2 { font-size:13px; letter-spacing:.08em; color:#666; margin:0 0 12px; }
+  .metric { display:flex; justify-content:space-between; padding:4px 0; font-size:14px; }
+  .metric .v { font-weight:600; }
+  .bar { height:8px; background:#e8ebf0; border-radius:4px; overflow:hidden; margin:4px 0 10px; }
+  .bar > div { height:100%; background:var(--ok); }
+  .bar > div.warn { background:var(--warn); } .bar > div.alarm { background:var(--alarm); }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { text-align:left; padding:5px 8px; border-bottom:1px solid #eef0f3; }
+  .pill { padding:1px 10px; border-radius:12px; font-size:12px; font-weight:600; }
+  .pill.ok { background:#e6f4ea; color:var(--ok); }
+  .pill.alarm { background:#fdecea; color:var(--alarm); }
+  .btn { background:#1b2a4a; color:#fff; border:none; border-radius:6px; padding:8px 16px; font-size:14px; cursor:pointer; }
+  .btn.ghost { background:#fff; color:#1b2a4a; border:1px solid #c9d2e3; }
+  .group-title { margin:22px 0 8px; font-size:14px; font-weight:700; color:#1b2a4a; letter-spacing:.05em; }
+  .error { background:#fdecea; color:var(--alarm); padding:10px 16px; border-radius:8px; margin-bottom:16px; }
+</style>
+</head>
+<body>
+<header>
+  <span class="logo">TwgIBMiControl</span>
+  <nav>
+    <a href="/" class="{{ 'active' if active == 'stato' }}">Stato</a>
+    <a href="/allarmi" class="{{ 'active' if active == 'allarmi' }}">Allarmi</a>
+    <a href="/configurazione" class="{{ 'active' if active == 'config' }}">Configurazione</a>
+  </nav>
+  <span class="conn">AS/400 connection: {{ cfg_as400 if cfg_as400 else 'JOBC' }}</span>
+</header>
+<main>
+{% if data.error %}<div class="error">{{ data.error }}</div>{% endif %}
+{% block content %}{% endblock %}
+</main>
+</body>
+</html>

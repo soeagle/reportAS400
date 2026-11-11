@@ -1,0 +1,49 @@
+# Configurazione TwgIBMiControl
+# Copia questo file in config.yaml e adattalo al tuo ambiente.
+
+# Connessione AS/400 (IBM i)
+# driver: nome del driver ODBC "IBM i Access ODBC Driver"
+# system: nome host o IP dell'AS/400
+# user / password: profilo con autorizzazioni di lettura su QSYS2
+as400:
+  system: "MYSYSTEM"
+  user: "MONITOR"
+  password: "PASSWORD"
+  driver: "IBM i Access ODBC Driver"
+
+# Se true non serve alcun AS/400: la dashboard parte con dati dimostrativi
+demo_mode: true
+
+# Ogni quanti secondi rieseguire i controlli (screenshot: "ogni pochi minuti")
+poll_seconds: 300
+
+# Soglie modificabili (come da screenshot)
+thresholds:
+  asp_pct: 90            # % occupazione ASP di sistema
+  temp_storage_gb: 50    # GB storage temporaneo
+  cpu_avg_pct: 80        # utilizzo medio CPU
+  msgw_max_seconds: 900  # lavoro in MSGW da più di 15 minuti
+  jobq_max_jobs: 50      # lavori in coda
+  backup_max_hours: 26   # ore dall'ultimo salvataggio concluso
+  spool_max_mb: 500      # spazio occupato da una coda di spool
+  qsecurity_min: 30      # livello minimo QSECURITY
+  qmaxsign_max: 5        # tentativi di sign-on massimi
+  qpwdminlen_min: 8      # lunghezza minima password
+
+# Valori attesi per i sottosistemi (allarme se non attivi)
+subsystems_required: ["QSYS", "QBATCH", "QINTER", "QCMN"]
+
+# Email di allerta (come da screenshot: "Quando qualcosa non va ricevi un'email")
+email:
+  enabled: false
+  smtp_host: "smtp.example.com"
+  smtp_port: 587
+  smtp_user: ""
+  smtp_password: ""
+  from: "ibmicontrol@example.com"
+  to: ["noc@example.com"]
+
+# Report PDF mensile (tracciabilità / evidenze NIS2)
+report:
+  enabled: true
+  output_dir: "reports"

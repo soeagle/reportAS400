@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% set active = 'config' %}
+{% block content %}
+<div class="banner"><span class="status-badge">Configurazione</span>
+  <span class="updated">Soglie modificabili - i controlli girano ogni pochi minuti</span></div>
+{% if saved %}<div class="pill ok">Configurazione salvata</div>{% endif %}
+<div class="card" style="max-width:640px">
+<form method="post">
+  <h2>SOGLIE</h2>
+  {% for key, label in [
+    ('asp_pct','Occupazione ASP di sistema (%)'),
+    ('temp_storage_gb','Storage temporaneo (GB)'),
+    ('cpu_avg_pct','Utilizzo medio CPU (%)'),
+    ('msgw_max_seconds','MSGW da più di (secondi)'),
+    ('jobq_max_jobs','Lavori in coda (max)'),
+    ('backup_max_hours','Ore dal backup concluso (max)'),
+    ('spool_max_mb','Spool per coda (MB)'),
+    ('qsecurity_min','QSECURITY minimo'),
+    ('qmaxsign_max','QMAXSIGN massimo'),
+    ('qpwdminlen_min','QPWDMINLEN minimo')] %}
+  <div class="metric"><span>{{ label }}</span>
+    <input name="{{ key }}" value="{{ cfg.thresholds[key] }}" style="width:90px;text-align:right"></div>
+  {% endfor %}
+  <h2 style="margin-top:16px">SOTTOSISTEMI RICHIESTI</h2>
+  <input name="subsystems" value="{{ cfg.subsystems_required | join(', ') }}" style="width:100%">
+  <div style="margin-top:16px"><button class="btn">Salva</button></div>
+</form>
+</div>
+{% endblock %}
