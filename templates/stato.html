@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% set active = 'stato' %}
+{% block content %}
+<div class="banner">
+  <span class="status-badge {{ 'warn' if data.alarm_count else 'ok' }}">{{ data.get('overall','...') }}</span>
+  <div class="counts">
+    <div class="ok-c"><b>{{ data.ok_count }}</b>OK</div>
+    <div class="alarm-c"><b>{{ data.alarm_count }}</b>In allarme</div>
+    <div class="alarm-c"><b>{{ data.high_severity }}</b>Severità alta</div>
+    <div><b>{{ data.total }}</b>Controlli</div>
+  </div>
+  <span class="updated">Aggiornato alle {{ data.updated }}</span>
+  <button class="btn" onclick="fetch('/api/refresh',{method:'POST'}).then(()=>location.reload())">Aggiorna</button>
+  <button class="btn ghost" onclick="fetch('/api/report',{method:'POST'}).then(r=>r.json()).then(r=>alert('Report: '+r.path))">Report PDF</button>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h2>DISCHI</h2>
+    <div class="metric"><span>Unità attive</span><span class="v">{{ data.units_active }}</span></div>
+    <div class="metric"><span>ASP di sistema</span><span class="v">{{ data.asp_pct }}%</span></div>
+    <div class="bar"><div class="{{ 'warn' if data.asp_pct >= 80 else '' }}" style="width:{{ data.asp_pct }}%"></div></div>
+    <div class="metric"><span>Storage</span><span class="v">{{ data.asp_used }} GB su {{ data.asp_total }} GB</span></div>
+    <div class="metric"><span>Storage temporaneo</span><span class="v">{{ data.temp_gb }} GB</span></div>
+    <div class="metric"><span>Soglia temporaneo</span><span class="v">&gt; {{ thresholds.temp_storage_gb }} GB</span></div>
+  </div>
+  <div class="card">
+    <h2>LAVORI E SOTTOSISTEMI</h2>
+    <div class="metric"><span>Lavori in MSGW</span><span class="v">{{ data.msgw | length }}</span></div>
+    <div class="metric"><span>Utilizzo medio CPU</span><span class="v">{{ data.cpu_avg | round(0) }}%</span></div>
+    <div class="metric"><span>Sottosistemi attivi</span><span class="v">{{ data.subsystems_active | join(', ') }}</span></div>
+    <div class="metric"><span>Code lavori</span><span class="v">{{ data.jobq | length }}</span></div>
+  </div>
+  <div class="card">
+    <h2>SALVATAGGI</h2>
+    <div class="metric"><span>Ore dall'ultimo backup concluso</span><span class="v">{{ data.backup_hours if data.backup_hours is not none else 'mai' }}</span></div>
+  </div>
+  <div class="card">
+    <h2>SICUREZZA</h2>
+    <div class="metric"><span>QSECURITY</span><span class="v">{{ data.QSECURITY }}</span></div>
+    <div class="metric"><span>QAUDCTL</span><span class="v">{{ data.QAUDCTL }}</span></div>
+    <div class="metric"><span>QMAXSIGN</span><span class="v">{{ data.QMAXSIGN }}</span></div>
+    <div class="metric"><span>QPWDMINLEN</span><span class="v">{{ data.QPWDMINLEN }}</span></div>
+  </div>
+</div>
+
+<div class="group-title">TUTTI I CONTROLLI ({{ data.total }})</div>
+<div class="card">
+<table>
+  <tr><th>Stato</th><th>Gruppo</th><th>Controllo</th><th>Valore</th><th>Dettaglio</th></tr>
+  {% for c in checks %}
+  <tr>
+    <td><span class="pill {{ 'ok' if c.status == 'OK' else 'alarm' }}">{{ 'OK' if c.status == 'OK' else 'AL ' + c.severity }}</span></td>
+    <td>{{ c.group }}</td><td>{{ c.name }}</td><td>{{ c.value }}</td><td>{{ c.detail }}</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+
+<div class="group-title">UNITÀ DISCO</div>
+<div class="card">
+<table>
+  <tr><th>Slot</th><th>Seriale</th><th>Stato</th><th>RAID</th><th>% usato</th></tr>
+  {% for u in data.units %}
+  <tr><td>{{ u.slot }}</td><td>{{ u.serial }}</td><td>{{ u.status }}</td><td>{{ u.raid }}</td><td>{{ u.pct_used }}</td></tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

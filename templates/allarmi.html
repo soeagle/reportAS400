@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% set active = 'allarmi' %}
+{% block content %}
+<div class="banner"><span class="status-badge">Storico allarmi</span>
+  <span class="updated">Tracciabilità ed evidenze NIS2</span></div>
+<div class="card">
+{% if history %}
+<table>
+  <tr><th>Data/ora</th><th>Severità</th><th>Controllo</th><th>Valore</th><th>Dettaglio</th></tr>
+  {% for h in history %}
+  <tr>
+    <td>{{ h.ts }}</td>
+    <td><span class="pill alarm">{{ h.severity }}</span></td>
+    <td>{{ h.name }} ({{ h.group }})</td><td>{{ h.value }}</td><td>{{ h.detail }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>Nessun allarme registrato.</p>
+{% endif %}
+</div>
+{% endblock %}
